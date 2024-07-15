@@ -1,0 +1,97 @@
+﻿@page "/update-product/{Id}"
+@rendermode InteractiveServer
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject NavigationManager Navigation
+@inject IProductService ProductService
+
+<MudContainer>
+    <MudPaper Class="pa-4">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudImage Src="@UpdateProduct.Image" Alt="@UpdateProduct.Name" Style="width: 50%;" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h4">@UpdateProduct.Name</MudText>
+                <MudText Typo="Typo.subtitle1">@UpdateProduct.Description</MudText>
+                <MudText Typo="Typo.body1"><strong>Price:</strong> @UpdateProduct.Price.ToString("C")</MudText>
+                <MudText Typo="Typo.body1"><strong>Quantity:</strong> @UpdateProduct.Quantity</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+    <MudPaper Class="p-4">
+        <MudText Typo="Typo.h4">Create New Product</MudText>
+        <MudDivider Class="mt-2 mb-4" />
+        <EditForm Model="@UpdateProduct" OnSubmit="@UpdateProducts">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Name" @bind-Value="@UpdateProduct.Name" />
+                    <ValidationMessage For="@(() => UpdateProduct.Name)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Description" @bind-Value="@UpdateProduct.Description" />
+                    <ValidationMessage For="@(() => UpdateProduct.Description)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Price" @bind-Value="@UpdateProduct.Price" />
+                    <ValidationMessage For="@(() => UpdateProduct.Price)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Quantity" @bind-Value="@UpdateProduct.Quantity" />
+                    <ValidationMessage For="@(() => UpdateProduct.Quantity)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Category ID" @bind-Value="@UpdateProduct.CategoryId" />
+                    <ValidationMessage For="@(() => UpdateProduct.CategoryId)" />
+                </MudItem>
+                <MudItem xs="12">
+                    <InputFile Accept="image/*" OnChange="HandleFileUpload">
+                        <MudTextField Label="Image URL" @bind-Value="@UpdateProduct.Image" ReadOnly="true" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary">Choose Image</MudButton>
+                    </InputFile>
+                </MudItem>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudCardActions>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    private ProductUpdateRequest UpdateProduct = new ProductUpdateRequest();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var productDTO = await ProductService.GetById(Guid.Parse(Id));
+        UpdateProduct.Name = productDTO.Name;
+        UpdateProduct.Price = productDTO.Price;
+        UpdateProduct.Quantity = productDTO.Quantity;
+        UpdateProduct.CategoryId = productDTO.CategoryId;
+        UpdateProduct.Description = productDTO.Description;
+        UpdateProduct.Image = productDTO.Image;
+    }
+
+    // Xử lý khi chọn file ảnh
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.GetMultipleFiles().FirstOrDefault();
+        if (file != null)
+        {
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            UpdateProduct.Image = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        }
+    }
+
+    private async Task UpdateProducts()
+    {
+        var created = await ProductService.Update(Guid.Parse(Id), UpdateProduct);
+        if (created)
+        {
+            Navigation.NavigateTo("/product");
+        }
+    }
+}

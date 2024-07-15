@@ -1,0 +1,48 @@
+﻿@page "/listproduct"
+@rendermode InteractiveServer
+<PageTitle>List Product</PageTitle>
+@if (ProductDto == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="ProductDto" Hover="true" SortLabel="Sort By">
+        <ToolBarContent>
+            <MudLink Class="text-decoration-none" Href="/create-product">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary">Create</MudButton>
+            </MudLink>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Image</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Image"><img src="@context.Image" alt="@context.Name" style="width:50px;height:50px;" /></MudTd>
+            <MudTd DataLabel="Price">@context.Price</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+            <MudTd DataLabel="Category">@context.CategoryName</MudTd>
+            <MudTd DataLabel="Actions">
+                <MudLink Href="@($"details/{context.Id}")" Class="mud-button mud-button-filled mud-button-filled-info">
+                    Detail
+                </MudLink>
+                <MudLink Href="@($"update-product/{context.Id}")" Class="mud-button mud-button-filled mud-button-filled-warning">
+                    Update
+                </MudLink>
+
+                <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => DeleteProduct(context.Id)">Delete</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+}
+

@@ -1,0 +1,54 @@
+﻿@page "/update-user/{Id}"
+@rendermode InteractiveServer
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject NavigationManager Navigation
+@inject IUserService UserService
+
+<MudContainer>
+    
+    <MudPaper Class="p-4">
+        <MudText Typo="Typo.h4">Create New Product</MudText>
+        <MudDivider Class="mt-2 mb-4" />
+        <EditForm Model="@UpdateUser" OnSubmit="@Update">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="User nam" @bind-Value="@UpdateUser.UserName" />
+                    <ValidationMessage For="@(() => UpdateUser.UserName)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Description" @bind-Value="@UpdateUser.PassWord" />
+                    <ValidationMessage For="@(() => UpdateUser.PassWord)" />
+                </MudItem>                
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudCardActions>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    private UserUpdateRequest UpdateUser = new UserUpdateRequest();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var Update = await UserService.GetById(Guid.Parse(Id));
+        UpdateUser.UserName = Update.UserName ;
+        UpdateUser.PassWord = Update.PassWord ;
+    }
+
+    // Xử lý khi chọn file ảnh
+   
+
+    private async Task Update()
+    {
+        var updated = await UserService.Update(Guid.Parse(Id), UpdateUser);
+        if (updated)
+        {
+            Navigation.NavigateTo("/listuser");
+        }
+    }
+}

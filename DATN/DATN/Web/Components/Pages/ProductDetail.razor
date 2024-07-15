@@ -1,0 +1,44 @@
+﻿@page "/details/{Id}"
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject IProductService ProductService 
+
+<MudContainer Class="mt-4">
+    @if (ProductDto == null)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+    }
+    else if (ProductDto != null)
+    {
+        <MudPaper Class="pa-4">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudImage Src="@ProductDto.Image" Alt="@ProductDto.Name" Style="width: 100%;" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudText Typo="Typo.h4">@ProductDto.Name</MudText>
+                    <MudText Typo="Typo.subtitle1">@ProductDto.Description</MudText>
+                    <MudText Typo="Typo.body1"><strong>Price:</strong> @ProductDto.Price.ToString("C")</MudText>
+                    <MudText Typo="Typo.body1"><strong>Quantity:</strong> @ProductDto.Quantity</MudText>
+                    <MudButton Href="/add-to-cart" Class="mt-4" Variant="Variant.Filled" Color="Color.Success">
+                        Add to Cart
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    }
+    else
+    {
+        <MudText Typo="Typo.h6" Color="Color.Error">Product not found</MudText>
+    }
+</MudContainer>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private ProductDto ProductDto { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        ProductDto = await ProductService.GetById(Guid.Parse(Id));
+    }
+}

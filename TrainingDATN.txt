@@ -1,0 +1,11 @@
+Dự án phát triển tài năng:
+- Mục đích: làm quen với base được xây dựng trực tiếp từ xưởng thực hành c# (cũ), làm quen với mudblazor, web core api và code first, làm dự án tốt nghiệp để pass với điểm cao
+- yêu cầu: Làm 1 dự án với base của đăng gửi, CRUD trên 3 bảng có liên kết khóa ngoại, có sử dụng:
++ Pagination (phân trang dữ liệu)
++ Auto mapper (để map các thuộc tính của entity với đối tượng dto)
++ Front-End: Mudblazor
++ Code first
+- khóa học: https://www.youtube.com/watch?v=R2Ttnd47T9Q&list=PLRhlTlpDUWszBRs388Koxf6sMBSuOs8cd
+- mọi người có thể hỏi Đông và Đăng trong quá trình làm bài nếu gặp khó *
+- Deadline: 01/07
+* Áp dụng tạo kim cương, pass sẽ làm dự án tốt nghiệp với nhau !!! (hãy cùng qua môn dự án tốt nghiệp với điểm thật cao nhé)

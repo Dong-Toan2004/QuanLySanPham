@@ -1,0 +1,53 @@
+﻿@page "/listuser"
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject IUserService UserService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+<MudContainer>
+    <MudPaper>
+       <MudLink Class="text-decoration-none" Href="/create-user">
+           <MudButton Variant="Variant.Filled" Color="Color.Primary">Create</MudButton>
+       </MudLink>
+
+        <MudTable Items="UserDto" Hover="true">
+            <HeaderContent>
+                <MudTh>Username</MudTh>
+                <MudTh>Password</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Username">@context.UserName</MudTd>
+                <MudTd DataLabel="Password">@context.PassWord</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudLink Href="@($"userdetails/{context.Id}")" Class="mud-button mud-button-filled mud-button-filled-info">
+                        Detail
+                    </MudLink>
+                    <MudLink Href="@($"update-user/{context.Id}")" Class="mud-button mud-button-filled mud-button-filled-warning">
+                        Update
+                    </MudLink>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => DeleteUser(context.Id))">
+                        Delete
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private IEnumerable<UserDto> UserDto { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserDto = await UserService.GetAll();
+    }
+
+    private async Task DeleteUser(Guid id)
+    {
+        await UserService.Delete(id);
+        UserDto = await UserService.GetAll();
+    }
+
+    
+}

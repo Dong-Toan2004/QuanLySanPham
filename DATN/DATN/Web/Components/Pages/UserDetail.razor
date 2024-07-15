@@ -1,0 +1,57 @@
+﻿@page "/userdetails/{Id}"
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject IUserService UserService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+<MudContainer Class="mt-4">
+    @if (UserDto == null)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+    }
+    else if (UserDto != null)
+    {
+        <MudContainer>
+            <MudPaper Class="p-4">
+                <MudText Typo="Typo.h4">User Details</MudText>
+                <MudDivider Class="mt-2 mb-4" />
+                @if (UserDto != null)
+                {
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="User Name" Value="@UserDto.UserName" Disabled="true" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField Label="Pass word" Value="@UserDto.PassWord" Disabled="true" />
+                        </MudItem>
+                    </MudGrid>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateBack">Back</MudButton>
+                    </MudCardActions>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body1">Loading...</MudText>
+                }
+            </MudPaper>
+        </MudContainer>
+    }
+    else
+    {
+        <MudText Typo="Typo.h6" Color="Color.Error">Product not found</MudText>
+    }
+</MudContainer>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private UserDto UserDto { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        UserDto = await UserService.GetById(Guid.Parse(Id));
+    }
+    private void NavigateBack()
+    {
+        Navigation.NavigateTo("/listuser");
+    }
+}

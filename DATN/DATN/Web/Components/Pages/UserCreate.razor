@@ -1,0 +1,43 @@
+﻿@page "/create-user"
+@rendermode InteractiveServer
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject NavigationManager Navigation
+@inject IUserService UserService
+
+<MudContainer>
+    <MudPaper Class="p-4">
+        <MudText Typo="Typo.h4">Create New User</MudText>
+        <MudDivider Class="mt-2 mb-4" />
+        <EditForm Model="@userCreate" OnSubmit="@CreateUser">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="User Name" @bind-Value="@userCreate.UserName" />
+                    <ValidationMessage For="@(() => userCreate.UserName)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="PassWord" @bind-Value="@userCreate.PassWord" />
+                    <ValidationMessage For="@(() => userCreate.PassWord)" />
+                </MudItem>
+
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                </MudCardActions>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private UserCreateRequest userCreate = new UserCreateRequest();
+
+    private async Task CreateUser()
+    {
+        userCreate.Id = Guid.NewGuid();
+        var created = await UserService.Create(userCreate);
+        if (created)
+        {
+            Navigation.NavigateTo("/listuser");
+        }
+    }
+}

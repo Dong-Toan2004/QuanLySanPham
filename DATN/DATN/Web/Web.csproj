@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\img\banner.jpg" />
+    <None Include="wwwroot\img\logo.png" />
+    <None Include="wwwroot\img\sanpham1.jpg" />
+    <None Include="wwwroot\img\sanpham2.jpg" />
+    <None Include="wwwroot\img\sanpham3.jpg" />
+    <None Include="wwwroot\img\sanpham4.jpg" />
+    <None Include="wwwroot\img\sanpham5.jpg" />
+    <None Include="wwwroot\img\sanpham6.jpg" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.6" />
+    <PackageReference Include="MudBlazor" Version="6.*" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Datn.Application\Datn.Application.csproj" />
+  </ItemGroup>
+  
+</Project>

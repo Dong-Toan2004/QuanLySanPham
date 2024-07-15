@@ -1,0 +1,72 @@
+﻿@page "/create-product"
+@rendermode InteractiveServer
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject NavigationManager Navigation
+@inject IProductService ProductService
+
+<MudContainer>
+    <MudPaper Class="p-4">
+        <MudText Typo="Typo.h4">Create New Product</MudText>
+        <MudDivider Class="mt-2 mb-4" />
+        <EditForm Model="@productCreate" OnSubmit="@CreateProduct">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Name" @bind-Value="@productCreate.Name" />
+                    <ValidationMessage For="@(() => productCreate.Name)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Description" @bind-Value="@productCreate.Description" />
+                    <ValidationMessage For="@(() => productCreate.Description)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Price" @bind-Value="@productCreate.Price" />
+                    <ValidationMessage For="@(() => productCreate.Price)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Quantity" @bind-Value="@productCreate.Quantity" />
+                    <ValidationMessage For="@(() => productCreate.Quantity)" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="Category ID" @bind-Value="@productCreate.CategoryId" />
+                    <ValidationMessage For="@(() => productCreate.CategoryId)" />
+                </MudItem>
+                <MudItem xs="12">
+                    <InputFile Accept="image/*" OnChange="HandleFileUpload">
+                        <MudTextField Label="Image URL" @bind-Value="@productCreate.Image" ReadOnly="true" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary">Choose Image</MudButton>
+                    </InputFile>
+                </MudItem>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                </MudCardActions>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private ProductCreateRequest productCreate = new ProductCreateRequest();
+
+    // Xử lý khi chọn file ảnh
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.GetMultipleFiles().FirstOrDefault();
+        if (file != null)
+        {
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            productCreate.Image = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        }
+    }
+
+    private async Task CreateProduct()
+    {
+        productCreate.Id = Guid.NewGuid();
+        var created = await ProductService.Create(productCreate);
+        if (created)
+        {
+            Navigation.NavigateTo("/product");
+        }
+    }
+}

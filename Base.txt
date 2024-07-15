@@ -1,0 +1,78 @@
+interface IBaseRepositories<TEtity> where TEtity : class
+
+Truy vấn dữ liệu:
+- không dung List/IEnumrable (truy vẫn ở bên EF rồi mới sang sql) -> IQueryable vì IQuery sẽ
+  truy vẫn bên sql trước rồi mới trả về data -> rất nhanh nhưng sẽ khó tìm lỗi
+- không dùng include -> bị dư thừa dữ liệu -> truy vẫn lâu, thay vào đó dùng Linq
+- phân trang
+
+Task<IQueryable<User>> GetAsync(Expression<Func<TEntity, bool> expression = null);
+
+claas BaseRepositories<TEntity> : IBaseRepositories<TEtity> where TEtity : class
+
+protected IDbContext _IDbContext = null;
+protected DbSet<TEntity> DBSet;
+protected DbContext DbContext;
+public DbSet<TEntity>
+{
+    Get
+    {
+	if(DbSet<TEntity> != null)
+        {
+            return DBSet = DbContext.Set<TEntity>
+        }
+	return DBSet;
+    }
+}
+Public BaseRepositories<TEntity>(IDbContext iDbContext)
+{
+   _IDbContext = iDbContext;
+   DbContext = (DbContext) iDbContext
+}
+x => x.id = user.id
+Public Async Task<IQueryable<User>> GetAsync(Expression<Func<TEntity,bool>> expression = null)
+{
+    IQueryable query = await expression != null ? DBSet.Where(expression) : DBSet;
+    return query
+}
+
+Namespace InAn.Infra.DataContexts
+
+3 class
+
+IDbContext : IDisponse ( để giảm các dữ liệu tồn động dư thừa (bing.com) )
+{
+    Task<TEntity> SetEntity() Where IEntity : Class;
+    Task<Int> CommitChangesAsync();
+}
+
+IAppDbContext : IDbContext
+
+
+AppDbConxt : DbContext, IAppDbContext
+
+Task<TEntity> SetEntity() Where IEntity : Class;
+
+base.Set<TEntity>
+
+Task<Int> CommitChangesAsync()
+
+base.SaveChangesAsync()
+
+
+
+
+Class CartService
+
+
+IBaseRepositories<Cart> _cartRepos;
+IBaseRepositories<User> _userRepos;
+
+
+GetAll()
+_userRepos.GetAsync(x => x.id = ???);
+
+
+
+
+

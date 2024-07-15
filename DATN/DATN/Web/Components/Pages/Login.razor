@@ -1,0 +1,50 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+@using Datn.Application.DataTransferObj
+@using Web.Services
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+
+@if (ShowErrors)
+{
+    <MudAlert Severity="Severity.Error">
+        <MudText>@Error</MudText>
+    </MudAlert>
+}
+
+<MudCard>
+    <MudCardContent>
+        <MudText Typo="Typo.h5">Login</MudText>
+        <EditForm Model="LoginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <MudTextField @bind-Value="LoginModel.UserName" Label="Username" Required="true" RequiredError="Username is required" />
+            <MudTextField @bind-Value="LoginModel.Password" Label="Password" InputType="InputType.Password" Required="true" RequiredError="Password is required" />
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private bool ShowErrors;
+    private string Error = "";
+    private LoginRequest LoginModel = new LoginRequest();
+
+    private async Task HandleLogin()
+    {
+        ShowErrors = false;
+
+        var result = await AuthService.Login(LoginModel);
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("/product");
+        }
+        else
+        {
+            ShowErrors = true;
+            Error = result.Error;
+        }
+    }
+}

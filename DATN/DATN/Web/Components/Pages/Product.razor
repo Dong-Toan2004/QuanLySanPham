@@ -1,0 +1,54 @@
+﻿@page "/product"
+@using Datn.Application.DataTransferObj
+
+<PageTitle>Products</PageTitle>
+
+@if (ProductDto == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudText Typo="Typo.h3" Class="mb-5">Product</MudText>
+
+    @if (ProductDto.Count() > 0)
+    {
+        const int itemRow = 4;
+        var numberOfRows = (int)Math.Ceiling((double)ProductDto.Count() / itemRow);
+        for (int rowIndex = 0; rowIndex < numberOfRows; rowIndex++)
+        {
+            var productRowList = ProductDto.Skip(rowIndex * itemRow).Take(itemRow).ToList();
+
+            <MudGrid Class="row mt-3">
+                @foreach (var item in productRowList)
+                {
+                    <MudItem xs="12" sm="6" md="3" Class="mb-2">
+                        <MudLink Href="@($"details/{item.Id}")" Class="text-decoration-none">
+                            <MudPaper Class="card">
+                                <MudImage Src="@item.Image" Alt="Alternate Text" Class="img-thumbnail" style="max-width: 100%; height: auto;" />
+                                <MudPaper Class="card-body">
+                                    <MudText Typo="Typo.h5" Class="card-title mb-3">@item.Name</MudText>
+                                    <MudText Typo="Typo.body1" Class="card-text"><b>@item.Price.ToString("C")</b></MudText>
+                                </MudPaper>
+                            </MudPaper>
+                        </MudLink>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    }
+}
+
+<style>
+    /* Loại bỏ đường gạch chân và thêm hiệu ứng hover cho MudLink */
+    .mud-link {
+        text-decoration: none !important; /* Loại bỏ đường gạch chân */
+        cursor: pointer; /* Thêm hiệu ứng hover */
+    }
+
+        /* Hiệu ứng hover cho MudLink */
+        .mud-link:hover {
+            text-decoration: none !important; /* Loại bỏ đường gạch chân khi hover */
+            opacity: 0.8; /* Thêm hiệu ứng mờ khi hover */
+        }
+</style>
